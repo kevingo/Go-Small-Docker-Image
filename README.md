@@ -86,4 +86,20 @@ CMD ["/bin/app"]
 3. `EXPOSE 8001`：挑選一個 expose 的 port
 4. `CMD ["/bin/app"]`：執行 `app` 這個執行檔
 
-### 整合	
+### 整合
+
+現在我們有兩個 Dockerfile，分別是 `Dockerfile.builder` 和 `Dockerfile.runner`，你只要透過一行指令就可以把要執行的 runner image 建立好：
+
+```
+$ docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
+```
+
+上面這一行指令（其實是包含兩個指令）會建立 builder 和 runnner 兩個 images，你可以執行 `docker images` 來看看：
+
+![image](https://github.com/kevingo/blog/raw/master/screenshot/builder-runner-image.png)
+
+你會看到 runner image 比起 builder image 小很多，而我們只需要執行 runner image 就可以啟動我們的服務了：
+
+```
+$ docker run -p 1234:8080 -t http runner
+```
