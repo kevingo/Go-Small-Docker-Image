@@ -1,4 +1,4 @@
-# 建立一個比較小的 golang Docker images
+# 建立一個比較小的 golang Docker Image
 
 相信使用 Docker 的人一定會有一個困擾，就是常常我們在 build 完一個 image 後， image size 都大到不行，這不僅僅造成空間浪費，而且當你想要部署的時候，也會花費許多時間，因此大家可以看到很多人在想辦法減少 docker image 的 size。今天來分享一個最近看到的好方法。
 
@@ -136,6 +136,8 @@ $ docker build -t builder -f Dockerfile.builder . && docker run builder | docker
 ```
 $ docker run -p 1234:8080 -t http runner
 ```
+
+所以當我們在執行部屬的時候，也只需要把 runner image 打包後，再丟到 production server 上去運行即可。
 
 ### References
 - [dockerception](https://github.com/jamiemccrindle/dockerception)
