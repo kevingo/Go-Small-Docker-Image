@@ -1,4 +1,4 @@
-## 建立一個比較小的 golang Docker images
+# 建立一個比較小的 golang Docker images
 
 相信使用 Docker 的人一定會有一個困擾，就是常常我們在 build 完一個 image 後， image size 都大到不行，這不僅僅造成空間浪費，而且當你想要部署的時候，也會花費許多時間，因此大家可以看到很多人在想辦法減少 docker image 的 size。今天來分享一個最近看到的好方法。
 
@@ -44,7 +44,35 @@ $docker run --publish 1234:8080 http.old
 
 ![image](https://github.com/kevingo/blog/raw/master/screenshot/docker-image-old.png)
 
-接下來我們來看看怎麼把一個 Dockerfile 拆成兩部份來減少 Docker image 的 size。
+### 使用 alpine
+
+你可能會想，不是有一個叫做 alpine 的 Linux 作業系統號稱只有 5MB，又小又快又方便。剛好 golagn 也有支援 alpine 的 image：[golang:alpine](https://github.com/docker-library/golang/blob/3a3e91c242b58a7d4e6022b3710b2e871f0ee5d6/1.7/alpine/Dockerfile)。
+
+我們用 golang 官方的 alpine image 來 build 一個我們的應用，你的 Dockerfile 可以這樣寫：
+
+```
+FROM golang:alpine
+
+ADD . /go/bin
+
+RUN go build /go/bin/main.go
+
+ENTRYPOINT /go/main
+
+EXPOSE 8080
+```
+
+然後 build：
+
+```
+$ docker build -t http.alpine -f Dockerfile.alpine .
+```
+
+接著用 `docker image` 來看一下 build 出來的 image size：
+
+![image](https://github.com/kevingo/blog/raw/master/screenshot/golang-alpine-image.png)
+
+變成 246.2 MB 了，是小了大概三分之一左右，但還是蠻大的。所以用 alpine 還是無法解決 image 過大的問題。接下來，讓我們看看把 Dockerfile 拆成 build 和 run 是怎麼一回事。
 
 ### 用來 Build 的 Dockerfile
 
@@ -94,7 +122,12 @@ CMD ["/bin/app"]
 $ docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
 ```
 
-上面這一行指令（其實是包含兩個指令）會建立 builder 和 runnner 兩個 images，你可以執行 `docker images` 來看看：
+上面這一行指令（其實是包含兩個指令）會建立 builder 和 runnner 兩個 images。
+
+1. `docker build -t builder -f Dockerfile.builder .` 會把 build 的 image 建立好。
+2. `docker run builder | docker build -t runner -` 這一行指令使用個 pipe 的功能，我們首先把 builder image 給跑起來，由於我們在 builder 的最後一行是用 `tar` 這個指令把執行檔和 runner 要用的 Dockerfile 用 stream 的方式做一個 stdout，就可以 pipe 給後面的 `docker build -t runner -` 這個指令使用了。
+
+你可以執行 `docker images` 來看看：
 
 ![image](https://github.com/kevingo/blog/raw/master/screenshot/builder-runner-image.png)
 
@@ -103,3 +136,7 @@ $ docker build -t builder -f Dockerfile.builder . && docker run builder | docker
 ```
 $ docker run -p 1234:8080 -t http runner
 ```
+
+### References
+- [dockerception](https://github.com/jamiemccrindle/dockerception)
+- [Deploy go server with Docker](https://blog.golang.org/docker)
