@@ -7,6 +7,7 @@
 先講結論，這個方法就是寫兩個 Dockerfile，一個用來 `build`，另一個用來 `run`。如果你已經知道這個方法，就不用再看下去囉。還不知道的話，就讓我來分享一下。
 
 ### 一般作法
+
 首先當然要有自己的程式碼，這裡用 golang 官方的 simple web server 當範例：
 
 ```go
@@ -36,8 +37,8 @@ EXPOSE 8080
 
 然後執行 port binding：
 
-```
-$docker run --publish 1234:8080 http.old
+```bash
+$ docker run --publish 1234:8080 http.old
 ```
 
 這樣沒什麼問題，只是當我們想要部署的時候，image size 很大：
@@ -50,7 +51,7 @@ $docker run --publish 1234:8080 http.old
 
 我們用 golang 官方的 alpine image 來 build 一個我們的應用，你的 Dockerfile 可以這樣寫：
 
-```
+```Dockerfile
 FROM golang:alpine
 
 ADD . /go/bin
@@ -64,7 +65,7 @@ EXPOSE 8080
 
 然後 build：
 
-```
+```bash
 $ docker build -t http.alpine -f Dockerfile.alpine .
 ```
 
@@ -80,7 +81,7 @@ $ docker build -t http.alpine -f Dockerfile.alpine .
 
 `Dockerfile.builder` 專門用來 build image，這裡共分為四個步驟：
 
-```
+```Dockerfile
 FROM golang:onbuild
 
 COPY Dockerfile.runner /go/bin/Dockerfile
@@ -99,7 +100,7 @@ CMD tar -cf - .
 
 上面提到的 Dockerfile.runner 檔案就類似這樣：
 
-```
+```Dockerfile
 FROM flynn/busybox
 
 COPY app /bin/app
@@ -118,7 +119,7 @@ CMD ["/bin/app"]
 
 現在我們有兩個 Dockerfile，分別是 `Dockerfile.builder` 和 `Dockerfile.runner`，你只要透過一行指令就可以把要執行的 runner image 建立好：
 
-```
+```bash
 $ docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
 ```
 
@@ -133,12 +134,13 @@ $ docker build -t builder -f Dockerfile.builder . && docker run builder | docker
 
 你會看到 runner image 比起 builder image 小很多，而我們只需要執行 runner image 就可以啟動我們的服務了：
 
-```
-$ docker run -p 1234:8080 -t http runner
+```bash
+$ docker run -p 1234:8080 runner
 ```
 
 所以當我們在執行部屬的時候，也只需要把 runner image 打包後，再丟到 production server 上去運行即可。
 
 ### References
+
 - [dockerception](https://github.com/jamiemccrindle/dockerception)
 - [Deploy go server with Docker](https://blog.golang.org/docker)
