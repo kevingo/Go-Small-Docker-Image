@@ -1,0 +1,14 @@
+language: go
+
+services:
+  - docker
+
+install:
+  - docker build -t http.old -f Dockerfile.old .
+  - docker run -d -p 1234:8080 --name http.old http.old
+
+script:
+  - docker ps | grep -q http.old
+
+after_script:
+  - docker rmi -f http.old
