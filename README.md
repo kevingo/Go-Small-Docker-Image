@@ -1,4 +1,4 @@
-# 建立一個比較小的 golang Docker Image
+# 建立一個比較小的 golang Docker Image [![Build Status](https://travis-ci.org/kevingo/Go-Small-Docker-Image.svg?branch=master)](https://travis-ci.org/kevingo/Go-Small-Docker-Image)
 
 相信使用 Docker 的人一定會有一個困擾，就是常常我們在 build 完一個 image 後， image size 都大到不行，這不僅僅造成空間浪費，而且當你想要部署的時候，也會花費許多時間，因此大家可以看到很多人在想辦法減少 docker image 的 size。今天來分享一個最近看到的好方法。
 
