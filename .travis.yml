@@ -10,7 +10,7 @@ install:
   - docker run -d -p 8082:8080 --name http.runner runner
   - docker build -t http.alpine -f Dockerfile.alpine .
   - docker run -d -p 8083:8080 --name http.alpine http.alpine
-  - go build main.go && docker build -t http.scratch -f Dockerfile.scratch .
+  - env GOOS=linux GOARCH=386 go build main.go && docker build -t http.scratch -f Dockerfile.scratch .
   - docker run -d -p 8084:8080 --name http.scratch http.scratch
 
 script:
