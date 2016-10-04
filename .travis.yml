@@ -10,6 +10,8 @@ install:
   - docker run -d -p 8082:8080 --name http.runner runner
   - docker build -t http.alpine -f Dockerfile.alpine .
   - docker run -d -p 8083:8080 --name http.alpine http.alpine
+  - go build -o main.go && docker build -t http.scratch -f Dockerfile.scratch .
+  - docker run -d -p 8084:8080 --name http.scratch http.scratch
 
 script:
   - docker ps | grep -q http.old
@@ -18,7 +20,11 @@ script:
   - curl localhost:8082
   - docker ps | grep -q http.alpine
   - curl localhost:8083
+  - docker ps | grep -q http.scratch
+  - curl localhost:8084
 
 after_script:
   - docker rmi -f http.old
   - docker rmi -f http.runner
+  - docker rmi -f http.alpine
+  - docker rmi -f http.scratch
