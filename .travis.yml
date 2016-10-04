@@ -8,12 +8,15 @@ install:
   - docker run -d -p 8081:8080 --name http.old http.old
   - docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
   - docker run -d -p 8082:8080 --name http.runner runner
+  - docker build -t http.alpine -f Dockerfile.alpine .
+  - docker run -d -p 8083:8080 --name http.alpine http.alpine
 
 script:
   - docker ps | grep -q http.old
   - curl localhost:8081
   - docker ps | grep -q http.runner
   - curl localhost:8082
+  - docker ps | grep -q http.alpine
   - curl localhost:8083
 
 after_script:
