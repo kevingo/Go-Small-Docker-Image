@@ -11,7 +11,10 @@ install:
 
 script:
   - docker ps | grep -q http.old
+  - curl localhost:8081
   - docker ps | grep -q http.runner
+  - curl localhost:8082
+  - curl localhost:8083
 
 after_script:
   - docker rmi -f http.old
