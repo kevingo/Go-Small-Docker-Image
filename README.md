@@ -140,6 +140,13 @@ $ docker run -p 1234:8080 runner
 
 所以當我們在執行部屬的時候，也只需要把 runner image 打包後，再丟到 production server 上去運行即可。
 
+### 使用 golang 1.7 
+
+在 golang 1.7 發表後，官方的 blog 特地寫了一篇文章：[Smaller Go 1.7 binaries](https://blog.golang.org/go1.7-binary-size)，用來比較 1.6 和 1.7 build 出來的 binary size，可以看到用最新的 1.7 build 出來的 image 會比較小一點，如果對於追求極小化 image 的人來說，可以嘗試用最新的版本來打包你的 binary，這樣整個 docker image 還會再更小一點。
+
+![image](https://blog.golang.org/go1.7-binary-size.png)
+
+
 ### References
 
 - [dockerception](https://github.com/jamiemccrindle/dockerception)
