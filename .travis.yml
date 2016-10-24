@@ -4,8 +4,8 @@ services:
   - docker
 
 install:
-  - docker build -t http.old -f Dockerfile.old .
-  - docker run -d -p 8081:8080 --name http.old http.old
+  - docker build -t http.onbuild -f Dockerfile.onbuild .
+  - docker run -d -p 8081:8080 --name http.onbuild http.onbuild
   - docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
   - docker run -d -p 8082:8080 --name http.runner runner
   - docker build -t http.alpine -f Dockerfile.alpine .
@@ -14,7 +14,7 @@ install:
   - docker run -d -p 8084:8080 --name http.scratch http.scratch
 
 script:
-  - docker ps | grep -q http.old
+  - docker ps | grep -q http.onbuild
   - curl localhost:8081
   - docker ps | grep -q http.runner
   - curl localhost:8082
@@ -24,7 +24,7 @@ script:
   - curl localhost:8084
 
 after_script:
-  - docker rmi -f http.old
+  - docker rmi -f http.onbuild
   - docker rmi -f http.runner
   - docker rmi -f http.alpine
   - docker rmi -f http.scratch
