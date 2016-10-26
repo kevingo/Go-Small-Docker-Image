@@ -120,13 +120,13 @@ CMD ["/bin/app"]
 現在我們有兩個 Dockerfile，分別是 `Dockerfile.builder` 和 `Dockerfile.runner`，你只要透過一行指令就可以把要執行的 runner image 建立好：
 
 ```bash
-$ docker build -t builder -f Dockerfile.builder . && docker run builder | docker build -t runner -
+$ docker build -t kevingo/http-builder -f Dockerfile.builder . && docker run kevingo/http-builder | docker build -t kevingo/http-runner -
 ```
 
 上面這一行指令（其實是包含兩個指令）會建立 builder 和 runnner 兩個 images。
 
-1. `docker build -t builder -f Dockerfile.builder .` 會把 build 的 image 建立好。
-2. `docker run builder | docker build -t runner -` 這一行指令使用個 pipe 的功能，我們首先把 builder image 給跑起來，由於我們在 builder 的最後一行是用 `tar` 這個指令把執行檔和 runner 要用的 Dockerfile 用 stream 的方式做一個 stdout，就可以 pipe 給後面的 `docker build -t runner -` 這個指令使用了。
+1. `docker build -t kevingo/http-builder -f Dockerfile.builder .` 會把 build 的 image 建立好。
+2. `docker run kevingo/http-builder | docker build -t kevingo/http-runner -` 這一行指令使用 pipe 的功能，我們首先把 builder image 給跑起來，由於我們在 builder 的最後一行是用 `tar` 這個指令把執行檔和 runner 要用的 Dockerfile 用 stream 的方式做一個 stdout，就可以 pipe 給後面的 `docker build -t kevingo/http-runner -` 這個指令使用了。
 
 你可以執行 `docker images` 來看看：
 
