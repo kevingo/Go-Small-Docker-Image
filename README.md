@@ -120,7 +120,8 @@ CMD ["/bin/app"]
 現在我們有兩個 Dockerfile，分別是 `Dockerfile.builder` 和 `Dockerfile.runner`，你只要透過一行指令就可以把要執行的 runner image 建立好：
 
 ```bash
-$ docker build -t kevingo/http-builder -f Dockerfile.builder . && docker run kevingo/http-builder | docker build -t kevingo/http-runner -
+$ docker build -t kevingo/http-builder -f Dockerfile.builder . && \ 
+docker run kevingo/http-builder | docker build -t kevingo/http-runner -
 ```
 
 上面這一行指令（其實是包含兩個指令）會建立 builder 和 runnner 兩個 images。
