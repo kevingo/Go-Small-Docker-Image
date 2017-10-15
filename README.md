@@ -47,7 +47,7 @@ $ docker run --publish 1234:8080 http.old
 
 ### 使用 alpine
 
-你可能會想，不是有一個叫做 alpine 的 Linux 作業系統號稱只有 5MB，又小又快又方便。剛好 golagn 也有支援 alpine 的 image：[golang:alpine](https://github.com/docker-library/golang/blob/3a3e91c242b58a7d4e6022b3710b2e871f0ee5d6/1.7/alpine/Dockerfile)。
+你可能會想，不是有一個叫做 alpine 的 Linux 作業系統號稱只有 5MB，又小又快又方便。剛好 golang 也有支援 alpine 的 image：[golang:alpine](https://github.com/docker-library/golang/blob/3a3e91c242b58a7d4e6022b3710b2e871f0ee5d6/1.7/alpine/Dockerfile)。
 
 我們用 golang 官方的 alpine image 來 build 一個我們的應用，你的 Dockerfile 可以這樣寫：
 
